@@ -552,6 +552,10 @@ life.
    #+end_src
 ** Org agenda setup
 
+This is a clusterfuck of old configuration from back when. Would probably be a
+good idea to break this up at some point. Essentially it combines org, org
+agenda and org-babel setup into one big block. Sorry! :-/
+
 #+begin_src emacs-lisp
   (setq org-agenda-files (list "~/org/stefan.org"
                              "~/org/reading.org"
