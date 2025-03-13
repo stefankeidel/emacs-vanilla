@@ -34,7 +34,7 @@
     (require 'org)
     (defun tangle-init ()
       "If the current buffer is init.org the code-blocks are
-    tangled, and the tangled file is compiled."
+      tangled, and the tangled file is compiled."
       (when (equal (buffer-file-name)
                    (expand-file-name (concat user-emacs-directory "init.org")))
         ;; Avoid running hooks when tangling.
@@ -88,9 +88,7 @@
 
   #+end_src
 
-* Sane defaults
-
-  These are what /I/ consider to be saner defaults.
+* Defaults
 
   Set =utf-8= as preferred coding system.
 
@@ -175,7 +173,6 @@
   #+end_src
   
 * Visual
-
 
   First off, let's declutter. Remove clickies to give a nice and clean look.
   Also, the cursor can relax. We add this to the [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html][early-init]], as it might be
@@ -349,7 +346,7 @@
 
 * Completion UI
 
-  I have transitioned from [[https://emacs-helm.github.io/helm/][Helm]] to [[http://oremacs.com/swiper/][Ivy]], and now, on to [[https://github.com/minad/vertico][Vertico]]. It improves the
+  I'm using Vertico. It improves the
   interface calling commands (i.e. ~M-x~), finding files, switching buffers,
   searching files and so on. Using the ~vertico-buffer-mode~ gives a more
   Helm-like experience, where completions are given a full fledged buffer.
@@ -398,6 +395,280 @@
 
   #+end_src
 
+** Navigation and searching
+
+   The package [[https://github.com/minad/consult][Consult]] improves navigation and searching.
+
+  #+begin_src emacs-lisp
+
+      ;; Consulting completing-read
+      (use-package consult
+        :bind (:map custom-bindings-map
+                    ("s-e" . consult-buffer)
+                    ("C-c r" . consult-ripgrep)
+                    ("C-s" . consult-line))
+        :config
+        (setq consult-preview-key (list :debounce 0.1 'any)))
+   #+end_src
+
+  #+begin_src emacs-lisp
+    (use-package ripgrep
+      :ensure t)
+   #+end_src
+
+  #+begin_src emacs-lisp
+    (use-package browse-kill-ring
+      :ensure t
+      :bind (:map custom-bindings-map ("M-y" . browse-kill-ring)))
+   #+end_src
+
+** Completion
+
+   I used [[https://github.com/auto-complete/auto-complete][Auto-Complete]] for years, then I used [[http://company-mode.github.io/][company-mode]] for even more years,
+   and now I am giving [[https://github.com/minad/corfu][corfu]] a shot. I want a pretty aggressive completion
+   system, hence the no delay settings and a short prefix length.
+
+   #+begin_src emacs-lisp
+
+   ;; Modular text completion framework
+   (use-package corfu
+     :ensure t
+     :init
+     (global-corfu-mode 1)
+     (corfu-popupinfo-mode 1)
+     :config
+     (setq corfu-cycle t))
+
+   #+end_src
+
+   I use corfu in concert with [[https://github.com/oantolin/orderless][orderless]].
+
+  #+begin_src emacs-lisp
+
+  ;; Emacs completion style that matches multiple regexps in any order
+  (use-package orderless
+    :config
+    (setq completion-styles '(orderless basic partial-completion)
+          completion-category-overrides '((file (styles basic partial-completion)))
+          orderless-component-separator "[ |]"))
+
+  #+end_src
+ 
+* Project Management
+
+ #+begin_src emacs-lisp
+   (use-package projectile
+     :ensure t
+     :init
+     (projectile-mode +1)
+     :bind (:map projectile-mode-map
+                 ("s-p" . projectile-command-map)
+                 ("C-c p" . projectile-command-map)
+                 ("s-f" . projectile-ripgrep)))
+  #+end_src
+
+* Editing
+
+** General
+
+
+  #+begin_src emacs-lisp
+    (use-package easy-kill
+        :ensure t
+        :bind (:map custom-bindings-map
+                    ("s-," . easy-mark)
+                    ))
+
+    (global-set-key [remap kill-ring-save] 'easy-kill)
+    (global-set-key [remap mark-sexp] 'easy-mark)
+  #+end_src
+
+  #+begin_src emacs-lisp
+
+  ;; Multiple cursors for Emacs
+  (use-package multiple-cursors
+    :defer t
+    :hook ((multiple-cursors-mode-enabled . (lambda () (corfu-mode -1)))
+           (multiple-cursors-mode-disabled . (lambda () (corfu-mode 1))))
+    :bind (:map custom-bindings-map
+                ("s-d" . mc/mark-all-like-this)
+                ("s-." . mc/mark-next-like-this)))
+
+  #+end_src
+
+  #+begin_src emacs-lisp
+
+    (use-package avy
+      :ensure t
+      :defer t
+      :bind (:map custom-bindings-map
+                  ("s-z" . avy-goto-char)))
+
+  #+end_src
+
+  #+begin_src emacs-lsip
+    (use-package yasnippet :config (yas-global-mode))
+  #+end_src
+
+* Org
+
+Org is worth its own category because it's such a huge part of my everyday
+life.
+
+** Org appear
+
+   Setting ~org-hide-emphasis-markers~ to ~t~ often makes it harder to edit markup
+   (i have found myself sometimes reverting to ~fundamental-mode~ because of
+   this). The package [[https://github.com/awth13/org-appear][org-appear]] automatically shows the hidden markup when the
+   cursor is on it.
+
+   #+begin_src emacs-lisp
+
+   (use-package org-appear
+     :hook (org-mode . org-appear-mode)
+     :config
+     (setq org-appear-autosubmarkers t
+           org-appear-autoentities t
+           org-appear-autolinks t
+           org-appear-inside-latex t))
+   #+end_src
+
+
+** Org agenda setup
+
+#+begin_src emacs-lisp
+  (setq org-agenda-files (list "~/org/stefan.org"
+                             "~/org/reading.org"
+                             "~/org/lichtblick.org"))
+
+  (setq org-todo-keywords
+        (quote ((sequence "TODO(t)" "SOMEDAY(s)" "PROGRESS(p!)" "|" "DONE(d!)")
+                (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "MEETING(m)"))))
+
+  (setq org-todo-keyword-faces
+        (quote (("TODO" :foreground "indian red" :weight bold)
+                  ("SOMEDAY" :foreground "LightSalmon1" :weight bold)a
+                  ("PROGRESS" :foreground "sky blue" :weight bold)
+                  ("DONE" :foreground "forest green" :weight bold)
+                  ("WAITING" :foreground "orange" :weight bold)
+                  ("HOLD" :foreground "magenta" :weight bold)
+                  ("CANCELLED" :foreground "forest green" :weight bold)
+                  ("MEETING" :foreground "forest green" :weight bold)
+                  ;; For my reading list
+                  ("QUEUE" :foreground "LightSalmon1" :weight bold)
+                  ("STARTED" :foreground "PeachPuff2" :weight bold)
+                  ("SAVED" :foreground "sky blue" :weight bold)
+                  )))
+
+    (setq org-tag-alist (quote ((:startgroup)
+                                ("@errand" . ?e)
+                                ("@work" . ?w)
+                                ("@move" . ?m)
+                                ("@home" . ?h)
+                                ("@routine" . ?t)
+                                ("@bike" . ?b)
+                                ("@reading" . ?r)
+                                (:endgroup)
+                                )))
+;; Open agenda vertically by default
+(defadvice org-agenda (around split-vertically activate)
+  (let (
+        (split-width-threshold 40)    ; or whatever width makes sense for you
+        (split-height-threshold nil)) ; but never horizontally
+    ad-do-it))
+#+end_src
+
+** Org archive
+
+#+begin_src emacs-lisp
+    (setq org-refile-targets '(("~/org/stefan.org" :maxlevel . 2)
+                             ("~/org/reading.org" :maxlevel . 1)
+                             ("~/org/lichtblick.org" :maxlevel . 2)
+                             ))
+
+  ;; one big archive for everything [file-specific rules still apply and override]
+  (setq org-archive-location '"archive.org::")
+
+  (setq org-agenda-skip-scheduled-if-deadline-is-shown t)
+  (setq org-agenda-skip-deadline-if-done t)
+  (setq org-agenda-include-diary t)
+
+  (use-package ob-http)
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((sql . t) (python . t) (http . t) (shell . t)))
+
+  (add-to-list 'org-modules 'org-habit t)
+
+  (setq org-agenda-custom-commands
+        '(
+          ("a" "Agenda and tasks"
+           ((agenda "" ((org-agenda-span 7)))
+            (tags-todo "@work")
+            (tags-todo "@home")
+            ;(tags-todo "@reading")
+            ))
+          ("r" "Reading list"
+           (
+            (todo "STARTED")
+            (todo "QUEUE")
+            (todo "SAVED")
+            ))
+          ))
+#+end_src
+
+** Roam
+
+#+begin_src emacs-lisp
+
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory (file-truename "~/org-roam/"))
+  (org-roam-capture-templates
+   '(
+   ("d" "default" plain
+      "%?"
+      :if-new (file+head "%<%Y-%m-%d--%H-%M-%S>-${slug}.org" "#+title: ${title}\n#+filetags:")
+      :unnarrowed t)
+   ("t" "ticket" plain
+    "* https://lichtblick.atlassian.net/browse/${title}\n\n%?\n"
+    :if-new (file+head "lichtblick-tickets/%<%Y-%m-%d--%H-%M-%S>-${slug}.org"
+                       "#+title: ${title}\n#+FILETAGS: ticket:lichtblick"
+                       )
+    :unnarrowed t)
+    )
+   )
+  :bind (;("s-b l" . org-roam-buffer-toggle)
+         ("s-b f" . org-roam-node-find)
+         ("s-b g" . org-roam-graph)
+         ("s-b i" . org-roam-node-insert)
+         ("s-b c" . org-roam-capture)
+         ;; ;; Dailies
+         ;("s-b j" . org-roam-dailies-capture-today)
+         )
+
+  :config
+  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:60}" 'face 'org-tag)))
+  (setq org-roam-completion-everywhere t)
+  (org-roam-db-autosync-mode))
+#+end_src
+
+* Key bindings
+
+** For builtins
+
+ #+begin_src emacs-lisp
+   ;; emacs meta package so we can modify our map
+   (use-package emacs
+     :bind (:map custom-bindings-map
+                 ("s-w" . next-multiframe-window)
+                 ("C-c a" . org-agenda)
+           ))
+
+ #+end_src
+
 * Final key binding
 
  Lastly we need to activate the map by creating and activating the
@@ -411,3 +682,4 @@
    :keymap custom-bindings-map)
 
  #+end_src
+ 

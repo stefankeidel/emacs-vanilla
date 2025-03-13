@@ -27,3 +27,5 @@ transient/
 early-init.el
 custom.el
 
+projectile-bookmarks.eld
+org-roam.db
