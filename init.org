@@ -506,7 +506,7 @@
 
   #+end_src
 
-  #+begin_src emacs-lsip
+  #+begin_src emacs-lisp
     (use-package yasnippet :config (yas-global-mode))
   #+end_src
 
@@ -533,7 +533,23 @@ life.
            org-appear-inside-latex t))
    #+end_src
 
+** Org Modern
 
+   Touch up the appearance of org mode files with some fancy UTF-8 characters.
+   I disable ~org-modern-block-fringe~ due to [[https://github.com/minad/org-modern/issues/144][org-modern conflicting with]]
+   ~org-adapt-indentation~.
+
+   #+begin_src emacs-lisp
+
+   ;; Modern looks for Org
+   (use-package org-modern
+     :after org
+     :hook (org-mode . org-modern-mode)
+     :config
+     (setq org-modern-block-fringe nil
+           org-modern-star 'replace))
+
+   #+end_src
 ** Org agenda setup
 
 #+begin_src emacs-lisp
@@ -570,17 +586,13 @@ life.
                                 ("@reading" . ?r)
                                 (:endgroup)
                                 )))
-;; Open agenda vertically by default
-(defadvice org-agenda (around split-vertically activate)
-  (let (
-        (split-width-threshold 40)    ; or whatever width makes sense for you
-        (split-height-threshold nil)) ; but never horizontally
-    ad-do-it))
-#+end_src
+    ;; Open agenda vertically by default
+    (defadvice org-agenda (around split-vertically activate)
+      (let (
+            (split-width-threshold 40)    ; or whatever width makes sense for you
+            (split-height-threshold nil)) ; but never horizontally
+        ad-do-it))
 
-** Org archive
-
-#+begin_src emacs-lisp
     (setq org-refile-targets '(("~/org/stefan.org" :maxlevel . 2)
                              ("~/org/reading.org" :maxlevel . 1)
                              ("~/org/lichtblick.org" :maxlevel . 2)
