@@ -15,3 +15,15 @@ dist/
 
 # Undo-tree save-files
 *.~undo-tree
+
+# Some "running Emacs" specific things
+eln-cache/
+elpa/
+history
+recentf
+transient/
+
+# generated
+early-init.el
+custom.el
+
