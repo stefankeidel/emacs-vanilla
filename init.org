@@ -586,19 +586,6 @@
       (add-to-list 'major-mode-remap-alist mapping))
     :config
     (mp-setup-install-grammars)
-    ;; Do not forget to customize Combobulate to your liking:
-    ;;
-    ;;  M-x customize-group RET combobulate RET
-    ;;
-    ;; (use-package combobulate
-    ;;   :custom
-    ;;   ;; You can customize Combobulate's key prefix here.
-    ;;   ;; Note that you may have to restart Emacs for this to take effect!
-    ;;   (combobulate-key-prefix "C-c o")
-    ;;   :hook ((prog-mode . combobulate-mode))
-    ;;   ;; Amend this to the directory where you keep Combobulate's source
-    ;;   ;; code.
-    ;;   :load-path ("~/code/combobulate"))
   )
 #+end_src
 
@@ -618,6 +605,18 @@ lsp Pyright
   :hook (python-ts-mode . (lambda ()
                          (require 'lsp-pyright)
                          (lsp-deferred))))
+#+end_src
+** YAML
+
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :mode ("\\.ya?ml\\'" . yaml-mode)
+  )
+
+  (use-package yaml-pro
+    :hook
+    (yaml-mode . yaml-pro-ts-mode)
+  )
 #+end_src
 * Org
 
@@ -699,12 +698,6 @@ agenda and org-babel setup into one big block. Sorry! :-/
                                 ("@reading" . ?r)
                                 (:endgroup)
                                 )))
-    ;; Open agenda vertically by default
-    (defadvice org-agenda (around split-vertically activate)
-      (let (
-            (split-width-threshold 40)    ; or whatever width makes sense for you
-            (split-height-threshold nil)) ; but never horizontally
-        ad-do-it))
 
     (setq org-refile-targets '(("~/org/stefan.org" :maxlevel . 2)
                              ("~/org/reading.org" :maxlevel . 1)
