@@ -247,6 +247,15 @@
       `(fringe ((t (:background nil))))) ; make fringe match the bg
   #+end_src
 
+  And a dashboard ...
+
+  #+begin_src emacs-lisp
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+  #+end_src
+  
 * Key bindings
 
   Inspired by [[http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs][this StackOverflow post]] I keep a =custom-bindings-map= that holds
@@ -476,8 +485,6 @@
   ;; Multiple cursors for Emacs
   (use-package multiple-cursors
     :defer t
-    :hook ((multiple-cursors-mode-enabled . (lambda () (corfu-mode -1)))
-           (multiple-cursors-mode-disabled . (lambda () (corfu-mode 1))))
     :bind (:map custom-bindings-map
                 ("s-d" . mc/mark-all-like-this)
                 ("s-." . mc/mark-next-like-this)))
