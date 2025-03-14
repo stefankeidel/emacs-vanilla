@@ -539,6 +539,7 @@
 #+begin_src emacs-lisp
   (use-package treesit
     :mode (("\\.tsx\\'" . tsx-ts-mode))
+    :ensure f
     :preface
     (defun mp-setup-install-grammars ()
       "Install Tree-sitter grammars if they are absent."
