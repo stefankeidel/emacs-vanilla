@@ -498,6 +498,17 @@
     (use-package yasnippet :config (yas-global-mode))
   #+end_src
 
+  #+begin_src emacs-lisp
+    (use-package undo-tree
+      :diminish
+      :init
+      (global-undo-tree-mode 1)
+      (setq undo-tree-auto-save-history t)
+      (setq undo-tree-history-directory-alist
+        `((".*" . ,temporary-file-directory)))
+    )
+  #+end_src
+
 ** LSP UI
 
 #+begin_src emacs-lisp
