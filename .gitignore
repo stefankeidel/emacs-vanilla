@@ -29,3 +29,8 @@ custom.el
 
 projectile-bookmarks.eld
 org-roam.db
+
+.cache
+.lsp-session*
+projects
+tree-sitter/
