@@ -625,6 +625,46 @@ lsp Pyright
     (yaml-mode . yaml-pro-ts-mode)
   )
 #+end_src
+** SQL
+
+#+begin_src emacs-lisp
+(use-package ob-sql-mode
+  :ensure t)
+
+; .pgpass parser
+(defun read-file (file)
+  "Returns file as list of lines."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (split-string (buffer-string) "\n" t)))
+
+(defun pgpass-to-sql-connection (config)
+  "Returns a suitable list for sql-connection-alist from a pgpass file."
+  (append sql-connection-alist
+          (let* ((make-connection (lambda (host port db user _pass)
+                                   (list
+                                    (concat db)
+                                    (list 'sql-product ''postgres)
+                                    (list 'sql-server host)
+                                    (list 'sql-user user)
+                                    (list 'sql-port (string-to-number port))
+                                    (list 'sql-database db)))))
+            (mapcar (lambda (line)
+                      (apply make-connection (split-string line ":" t)))
+                    config))))
+
+;;; Actually populating sql-connection-alist
+(setq sql-connection-alist (pgpass-to-sql-connection (read-file "~/.pgpass")))
+
+(add-hook 'sql-interactive-mode-hook
+          (lambda ()
+            (toggle-truncate-lines t)))
+
+(setq org-confirm-babel-evaluate
+      (lambda (lang body)
+        (not (string= lang "sql"))))
+#+end_src
+
 * Org
 
 Org is worth its own category because it's such a huge part of my everyday
@@ -832,46 +872,6 @@ Use ~emacs~ as a package to modify the keymap.
            ))
 
  #+end_src
-
-* SQL
-
-#+begin_src emacs-lisp
-(use-package ob-sql-mode
-  :ensure t)
-
-; .pgpass parser
-(defun read-file (file)
-  "Returns file as list of lines."
-  (with-temp-buffer
-    (insert-file-contents file)
-    (split-string (buffer-string) "\n" t)))
-
-(defun pgpass-to-sql-connection (config)
-  "Returns a suitable list for sql-connection-alist from a pgpass file."
-  (append sql-connection-alist
-          (let* ((make-connection (lambda (host port db user _pass)
-                                   (list
-                                    (concat db)
-                                    (list 'sql-product ''postgres)
-                                    (list 'sql-server host)
-                                    (list 'sql-user user)
-                                    (list 'sql-port (string-to-number port))
-                                    (list 'sql-database db)))))
-            (mapcar (lambda (line)
-                      (apply make-connection (split-string line ":" t)))
-                    config))))
-
-;;; Actually populating sql-connection-alist
-(setq sql-connection-alist (pgpass-to-sql-connection (read-file "~/.pgpass")))
-
-(add-hook 'sql-interactive-mode-hook
-          (lambda ()
-            (toggle-truncate-lines t)))
-
-(setq org-confirm-babel-evaluate
-      (lambda (lang body)
-        (not (string= lang "sql"))))
-#+end_src
 
 * Final key binding
 
