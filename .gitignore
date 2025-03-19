@@ -34,3 +34,5 @@ org-roam.db
 .lsp-session*
 projects
 tree-sitter/
+bookmarks
+.mc-lists.el
