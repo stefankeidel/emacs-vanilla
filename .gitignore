@@ -36,3 +36,4 @@ projects
 tree-sitter/
 bookmarks
 .mc-lists.el
+autosaves/
