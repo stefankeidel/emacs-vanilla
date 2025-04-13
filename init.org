@@ -711,6 +711,15 @@ lsp Pyright
 Org is worth its own category because it's such a huge part of my everyday
 life.
 
+** General settings
+
+Disable org mode indents which is usually 2 spaces by default and is annoying af.
+
+#+begin_src emacs-lisp
+(setq org-edit-src-content-indentation 0)
+#+end_src
+
+
 ** Org appear
 
    Setting ~org-hide-emphasis-markers~ to ~t~ often makes it harder to edit markup
