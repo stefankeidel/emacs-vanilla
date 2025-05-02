@@ -537,6 +537,14 @@
     )
   #+end_src
 
+  #+begin_src emacs-lisp
+    (use-package visual-regexp
+            :config
+            (use-package visual-regexp-steroids
+                    :bind
+                    ("<insert> r r" . vr/replace)))
+  #+end_src
+
 ** LSP UI
 
 #+begin_src emacs-lisp
