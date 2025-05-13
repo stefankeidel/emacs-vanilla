@@ -254,15 +254,6 @@
       `(fringe ((t (:background nil))))) ; make fringe match the bg
   #+end_src
 
-  And a dashboard ...
-
-  #+begin_src emacs-lisp
-(use-package dashboard
-  :ensure t
-  :config
-  (dashboard-setup-startup-hook))
-  #+end_src
-
 ** Center content mode
 
    [[https://git.larstvei.no/larstvei/center-content-mode][center-content-mode]] is a small, homegrown, minor mode for centering the
