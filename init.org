@@ -538,11 +538,13 @@
   #+end_src
 
   #+begin_src emacs-lisp
-    (use-package visual-regexp
-            :config
-            (use-package visual-regexp-steroids
-                    :bind
-                    ("<insert> r r" . vr/replace)))
+  (use-package visual-regexp
+    :ensure t
+    :defer t)
+
+  (use-package visual-regexp-steroids
+    :ensure t
+    :defer t)
   #+end_src
 
 ** LSP UI
