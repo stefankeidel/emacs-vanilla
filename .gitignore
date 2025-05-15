@@ -37,3 +37,4 @@ tree-sitter/
 bookmarks
 .mc-lists.el
 autosaves/
+.org-id-locations

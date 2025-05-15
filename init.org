@@ -254,15 +254,6 @@
       `(fringe ((t (:background nil))))) ; make fringe match the bg
   #+end_src
 
-  And a dashboard ...
-
-  #+begin_src emacs-lisp
-(use-package dashboard
-  :ensure t
-  :config
-  (dashboard-setup-startup-hook))
-  #+end_src
-
 ** Center content mode
 
    [[https://git.larstvei.no/larstvei/center-content-mode][center-content-mode]] is a small, homegrown, minor mode for centering the
@@ -917,7 +908,6 @@ agenda and org-babel setup into one big block. Sorry! :-/
      ;                 (jinx-mode -1)
                       (org-modern-mode -1)
                       (set (make-local-variable 'org-modern-hide-stars) t)
-                      (setq cursor-type nil)
                       (org-modern-mode 1)
                       (org-present-big)
                       (org-display-inline-images)
@@ -929,7 +919,6 @@ agenda and org-babel setup into one big block. Sorry! :-/
                       ;(jinx-mode 1)
                       (org-modern-mode -1)
                       (setq org-modern-hide-stars (default-value 'org-modern-hide-stars))
-                      (setq cursor-type (default-value 'cursor-type))
                       (org-modern-mode 1)
                       ;(focus-mode -1)
                       (center-content-mode -1))))
@@ -954,16 +943,18 @@ agenda and org-babel setup into one big block. Sorry! :-/
    
 * Copilot
 
-#+begin_src emacs-lisp
-  (use-package copilot
-    :vc (:url "https://github.com/copilot-emacs/copilot.el"
-              :rev :newest
-              :branch "main")
-    :bind (:map custom-bindings-map
-                ("<f2>" . copilot-accept-completion)
-                ))
+Disable for now, as I'm using all my AI through agent mode in VSCode, sadly
 
-  (add-hook 'prog-mode-hook 'copilot-mode)
+#+begin_src emacs-lisp
+;; (use-package copilot
+;;   :vc (:url "https://github.com/copilot-emacs/copilot.el"
+;;             :rev :newest
+;;             :branch "main")
+;;   :bind (:map custom-bindings-map
+;;               ("<f2>" . copilot-accept-completion)
+;;               ))
+
+;; (add-hook 'prog-mode-hook 'copilot-mode)
 #+end_src
 
 * Key bindings
