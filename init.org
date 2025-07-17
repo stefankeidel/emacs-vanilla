@@ -967,13 +967,18 @@ Disable for now, as I'm using all my AI through agent mode in VSCode, sadly
 Use ~emacs~ as a package to modify the keymap.
 
  #+begin_src emacs-lisp
-   (use-package emacs
-     :bind (:map custom-bindings-map
-                 ("s-w" . next-multiframe-window)
-                 ("C-c a" . org-agenda)
-                 ("C-c c" . org-capture)
-                 ("s-i k" . kill-buffer-basename)
-           ))
+  (defun kill-buffer-basename ()
+    "Kill buffer basename"
+    (interactive)
+    (kill-new (file-name-base (buffer-file-name))))
+   
+ (use-package emacs
+   :bind (:map custom-bindings-map
+               ("s-w" . next-multiframe-window)
+               ("C-c a" . org-agenda)
+               ("C-c c" . org-capture)
+               ("s-i k" . kill-buffer-basename)
+         ))
 
  #+end_src
 
