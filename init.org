@@ -967,6 +967,8 @@ Disable for now, as I'm using all my AI through agent mode in VSCode, sadly
   :ensure t
   :bind (
          ("C-x w" . elfeed)
+         :map elfeed-show-mode-map
+         ("v" . elfeed-show-quick-url-note)
          )
   :init
   (setq elfeed-feeds
@@ -1024,6 +1026,13 @@ Disable for now, as I'm using all my AI through agent mode in VSCode, sadly
         ("http://jpkoning.blogspot.com/feeds/posts/default?alt=rss" blog)
         ))
   (setq-default elfeed-search-filter "@2-weeks-ago +unread ")
+  (defun elfeed-show-quick-url-note ()
+      "Fastest way to capture entry link to org agenda from elfeed show mode"
+      (interactive)
+      (elfeed-link-title elfeed-show-entry)
+      (org-capture nil "r")
+      (yank)
+      (org-capture-finalize))
   )
 
 (defun elfeed-link-title (entry)
@@ -1042,24 +1051,12 @@ Disable for now, as I'm using all my AI through agent mode in VSCode, sadly
 (interactive)
 (elfeed-link-title elfeed-show-entry))
 
-(defun elfeed-show-quick-url-note ()
-  "Fastest way to capture entry link to org agenda from elfeed show mode"
-  (interactive)
-  (elfeed-link-title elfeed-show-entry)
-  (org-capture nil "r")
-  (yank)
-  (org-capture-finalize))
+
 
 ;; (define-key elfeed-show-mode-map "l"
 ;;   (lambda ()
 ;;     (interactive)
 ;;     (elfeed-link-title elfeed-show-entry)))
-
-;; (define-key elfeed-show-mode-map "v"
-;;   (lambda ()
-;;     (interactive)
-;;     (elfeed-show-quick-url-note)))
-
 
 
 ;; (setq-default elfeed-search-filter "@2-weeks-ago +unread ")
