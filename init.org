@@ -1025,6 +1025,18 @@ Disable for now, as I'm using all my AI through agent mode in VSCode, sadly
         ("https://martinfowler.com/feed.atom" blog)
         ("http://jpkoning.blogspot.com/feeds/posts/default?alt=rss" blog)
         ))
+  :config
+  (defface interesting-elfeed-entry
+    '((t :foreground "#f77"))
+    "interesting elfeed entry")
+  (defface maybe-elfeed-entry
+    '((t :foreground "grey"))
+    "maybe elfeed entry")
+  (push '(interesting interesting-elfeed-entry)
+        elfeed-search-face-alist)
+
+  (push '(maybe maybe-elfeed-entry)
+        elfeed-search-face-alist)
   (setq-default elfeed-search-filter "@2-weeks-ago +unread ")
   (defun elfeed-show-quick-url-note ()
       "Fastest way to capture entry link to org agenda from elfeed show mode"
